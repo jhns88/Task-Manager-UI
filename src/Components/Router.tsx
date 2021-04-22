@@ -39,7 +39,7 @@ export interface RouterState {
 export class Router extends React.PureComponent<RouterProps, RouterState> {
 
     /**
-     *
+     * TRUE if the router is mounted.
      */
     private mounted: boolean = false;
 
@@ -80,11 +80,9 @@ export class Router extends React.PureComponent<RouterProps, RouterState> {
      * @inheritDoc
      */
     public render() {
-        let page: string = this.state.page;
-
         return (
             <div>
-                {this.props.pages[page]()}
+                {this.props.pages[this.state.page]()}
             </div>
         );
     }

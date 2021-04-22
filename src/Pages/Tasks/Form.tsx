@@ -1,20 +1,28 @@
-import React, {FormEvent} from "react";
+import React from "react";
 import {Button, Header, Divider, Input} from "semantic-ui-react";
 
+/**
+ * The task form props.
+ */
 interface FormProps {
-
+    // nothing special yet
 }
 
+/**
+ * The task form component states.
+ */
 interface FormStates {
     task?: (string | undefined);
 }
 
-
 /**
- *
+ * The task form implementation.
  */
 export class Form extends React.Component<FormProps, FormStates> {
 
+    /**
+     * The task form component constructor.
+     */
     public constructor(props: FormProps) {
         super(props);
 
@@ -23,12 +31,20 @@ export class Form extends React.Component<FormProps, FormStates> {
         };
     }
 
-
+    /**
+     * Performs a task save action.
+     */
     private saveTask(): void {
+        alert("save: " + this.state.task);
     }
 
-    private storeInput(event: FormEvent): void {
-        // this.setState()
+    /**
+     * Stores the current task value to allow controlled input component.
+     */
+    private storeInput(event: React.ChangeEvent<HTMLInputElement>): void {
+        this.setState({
+            "task": event.target.value
+        });
     }
 
     /**
