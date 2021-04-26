@@ -4,8 +4,8 @@ import {Button, Header, Divider, Input} from "semantic-ui-react";
 /**
  * The task form props.
  */
-interface FormProps {
-    // nothing special yet
+export interface FormProps {
+    id?: number;
 }
 
 /**
@@ -13,12 +13,15 @@ interface FormProps {
  */
 interface FormStates {
     task?: (string | undefined);
+    done?: boolean;
 }
+
+const axios = require('axios').default;
 
 /**
  * The task form implementation.
  */
-export class Form extends React.Component<FormProps, FormStates> {
+export class Form extends React.PureComponent<FormProps, FormStates> {
 
     /**
      * The task form component constructor.
@@ -27,7 +30,8 @@ export class Form extends React.Component<FormProps, FormStates> {
         super(props);
 
         this.state = {
-            "task": undefined
+            "task": undefined,
+            "done": false
         };
     }
 
@@ -35,7 +39,21 @@ export class Form extends React.Component<FormProps, FormStates> {
      * Performs a task save action.
      */
     private saveTask(): void {
-        alert("save: " + this.state.task);
+        axios({
+            "method": 'post',
+            "url": '/tasks',
+            "data": {
+                "tasktext": this.state.task,
+                "done": this.state.done
+            }
+        });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public componentDidMount() {
+
     }
 
     /**
