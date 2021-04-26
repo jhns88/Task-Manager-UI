@@ -43,7 +43,10 @@ export class Router extends React.PureComponent<RouterProps, RouterState> {
      */
     private mounted: boolean = false;
 
-    private pageListenerRef: (string | undefined);
+    /**
+     * A reference identifier of the subscribes router page change listener.
+     */
+    private pageChangeListenerRefId: (string | undefined);
 
     /**
      * The router constructor.
@@ -63,7 +66,7 @@ export class Router extends React.PureComponent<RouterProps, RouterState> {
     public componentDidMount(): void {
         this.mounted = true;
 
-        this.pageListenerRef = CoreRouter.getInstance().addOnPageChangeListener(
+        this.pageChangeListenerRefId = CoreRouter.getInstance().addOnPageChangeListener(
             (page: string, props: object) => {
                 if (this.mounted === true) {
                     this.setState({
@@ -81,7 +84,9 @@ export class Router extends React.PureComponent<RouterProps, RouterState> {
     public componentWillUnmount(): void {
         this.mounted = false;
 
-        this.pageListenerRef && CoreRouter.getInstance().unsubscribePageChangeListener(this.pageListenerRef);
+        this.pageChangeListenerRefId && CoreRouter.getInstance().unsubscribePageChangeListener(
+            this.pageChangeListenerRefId
+        );
     }
 
     /**

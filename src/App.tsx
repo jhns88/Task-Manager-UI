@@ -36,6 +36,7 @@ class App extends React.Component<AppProps, AppState> {
                             Task Manager
                         </Menu.Item>
                         <Menu.Item as='a' onClick={() => this.switchPage("task.list")}>Tasks</Menu.Item>
+                        <Menu.Item as='a' onClick={() => this.switchPage("task.form")}>New Task</Menu.Item>
                     </Container>
                 </Menu>
 
