@@ -12,7 +12,7 @@ interface PageDefinitions {
     /**
      *
      */
-    [key: string]: () => PageDefinition;
+    [key: string]: (props: any) => PageDefinition;
 }
 
 /**
@@ -29,8 +29,8 @@ export interface RouterProps {
 }
 
 export interface RouterState {
-
     page: string;
+    props: string;
 }
 
 /**
@@ -43,6 +43,8 @@ export class Router extends React.PureComponent<RouterProps, RouterState> {
      */
     private mounted: boolean = false;
 
+    private pageListenerRef: (string | undefined);
+
     /**
      * The router constructor.
      */
@@ -50,30 +52,36 @@ export class Router extends React.PureComponent<RouterProps, RouterState> {
         super(props, state);
 
         this.state = {
-            "page": props.defaultPage
+            "page": props.defaultPage,
+            "props": JSON.stringify({})
         };
     }
 
     /**
      * @inheritDoc
      */
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.mounted = true;
 
-        CoreRouter.getInstance().addOnPageChangeListener(page => {
-            if (this.mounted === true) {
-                this.setState({
-                    "page": page
-                });
+        this.pageListenerRef = CoreRouter.getInstance().addOnPageChangeListener(
+            (page: string, props: object) => {
+                if (this.mounted === true) {
+                    this.setState({
+                        "page": page,
+                        "props": JSON.stringify(props)
+                    });
+                }
             }
-        });
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public componentWillUnmount() {
+    public componentWillUnmount(): void {
         this.mounted = false;
+
+        this.pageListenerRef && CoreRouter.getInstance().unsubscribePageChangeListener(this.pageListenerRef);
     }
 
     /**
@@ -82,7 +90,9 @@ export class Router extends React.PureComponent<RouterProps, RouterState> {
     public render() {
         return (
             <div>
-                {this.props.pages[this.state.page]()}
+                {this.props.pages[this.state.page](
+                    JSON.parse(this.state.props)
+                )}
             </div>
         );
     }
