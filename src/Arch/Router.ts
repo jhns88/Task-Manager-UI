@@ -1,11 +1,8 @@
 type PageChangeListenerFunc = (page: string, props: object) => void;
 
 interface PageChangeListener {
-
     [key: string]: PageChangeListenerFunc;
 }
-
-
 
 /**
  * The router which allows to change app page context.
@@ -39,7 +36,7 @@ export class Router {
     /**
      * Allows to switch the page.
      */
-    public switchPage(page: string, props: object): void {
+    public switchPage(page: string, props: object = {}): void {
         for (let id in this.pageChangeListeners) {
             this.pageChangeListeners[id](page, props);
         }

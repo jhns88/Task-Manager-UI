@@ -1,5 +1,8 @@
 import React from "react";
 import {Button, Header, Divider, Input} from "semantic-ui-react";
+import {AxiosResponse} from "axios";
+import {Router} from "../../Arch/Router";
+import {CommonTaskPage} from "./Common";
 
 /**
  * The task form props.
@@ -12,6 +15,7 @@ export interface FormProps {
  * The task form component states.
  */
 interface FormStates {
+    id?: undefined;
     task?: (string | undefined);
     done?: boolean;
 }
@@ -30,7 +34,8 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
         super(props);
 
         this.state = {
-            "task": undefined,
+            "id": undefined,
+            "task": "",
             "done": false
         };
     }
@@ -39,13 +44,18 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
      * Performs a task save action.
      */
     private saveTask(): void {
+        const id: (number | undefined) = this.state.id;
+
         axios({
-            "method": 'post',
-            "url": '/tasks',
+            "method": (id !== undefined ? "put": "post"),
+            "url": 'http://localhost:8080/tasks' + (id !== undefined ? ("/" + id) : ""),
             "data": {
+                "id": id,
                 "tasktext": this.state.task,
                 "done": this.state.done
             }
+        }).then((response: AxiosResponse) => {
+            Router.getInstance().switchPage(CommonTaskPage.List);
         });
     }
 
@@ -53,7 +63,15 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
      * @inheritDoc
      */
     public componentDidMount() {
-
+        // load data
+        if (this.state.id !== undefined) {
+            axios({
+                "method": 'get',
+                "url": 'http://localhost:8080/tasks/' + this.state.id
+            }).then((response: AxiosResponse) => {
+                this.setState(JSON.parse(response.data));
+            });
+        }
     }
 
     /**
