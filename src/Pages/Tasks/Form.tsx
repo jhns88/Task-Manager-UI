@@ -15,8 +15,8 @@ export interface FormProps {
  * The task form component states.
  */
 interface FormStates {
-    id?: undefined;
-    task?: (string | undefined);
+    id?: number;
+    tasktext?: (string | undefined);
     done?: boolean;
 }
 
@@ -34,8 +34,8 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
         super(props);
 
         this.state = {
-            "id": undefined,
-            "task": "",
+            "id": props.id,
+            "tasktext": "",
             "done": false
         };
     }
@@ -51,7 +51,7 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
             "url": 'http://localhost:8080/tasks' + (id !== undefined ? ("/" + id) : ""),
             "data": {
                 "id": id,
-                "tasktext": this.state.task,
+                "tasktext": this.state.tasktext,
                 "done": this.state.done
             }
         }).then((response: AxiosResponse) => {
@@ -69,7 +69,7 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
                 "method": 'get',
                 "url": 'http://localhost:8080/tasks/' + this.state.id
             }).then((response: AxiosResponse) => {
-                this.setState(JSON.parse(response.data));
+                this.setState(response.data);
             });
         }
     }
@@ -79,7 +79,7 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
      */
     private storeInput(event: React.ChangeEvent<HTMLInputElement>): void {
         this.setState({
-            "task": event.target.value
+            "tasktext": event.target.value
         });
     }
 
@@ -89,9 +89,9 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
     public render() {
         return (
             <div>
-                <Header as='h1'>Create Task</Header>
+                <Header as='h1'>{this.state.id !== undefined ? "Edit Task" : "Create Task"}</Header>
                 <Divider/>
-                <Input placeholder='Task' onChange={e => this.storeInput(e)} value={this.state.task} />
+                <Input placeholder='Task' onChange={e => this.storeInput(e)} value={this.state.tasktext} />
                 <Divider/>
                 <div>
                     <Button onClick={() => this.saveTask()} primary>Save</Button>
