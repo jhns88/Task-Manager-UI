@@ -1,10 +1,9 @@
 import React from "react";
-import {AxiosPromise, AxiosResponse} from "axios";
 import {Router} from "../../Arch/Router";
 import {CommonTaskPage} from "./Common";
 import {Divider, Button, Header, Loader, Icon} from "semantic-ui-react";
-
-const axios = require('axios').default;
+import {TaskStorage} from "../../Arch/Storages/TaskStorage";
+import {Task} from "../../Arch/Task";
 
 interface ListProps {
     // nothing special yet
@@ -14,23 +13,19 @@ interface ListStates {
     listdata?: string; // the list item data as json string
 }
 
-interface ListItem {
-    id: number;
-    tasktext: string;
-    done: boolean;
-}
-
 /**
  *
  */
-export class List extends React.Component<ListProps, ListStates> {
+export class List extends React.PureComponent<ListProps, ListStates> {
 
+    /**
+     * The task list constructor.
+     */
     constructor(props: ListProps) {
         super(props);
 
         this.state = {};
     }
-
 
     /**
      * @inheritDoc
@@ -39,61 +34,55 @@ export class List extends React.Component<ListProps, ListStates> {
         this.loadTasks();
     }
 
+    /**
+     * Load tasks for the task list.
+     */
     private loadTasks(): void {
-        axios({
-            "method": 'get',
-            "url": 'http://localhost:8080/tasks'
-        }).then((response: AxiosResponse) => {
-            this.setState({
-                "listdata": JSON.stringify(response.data)
-            });
-        });
+        TaskStorage.DEFAULT.getTasks()
+            .then(tasks => {
+                this.setState({
+                    "listdata": JSON.stringify(tasks)
+                });
+            })
+        ;
     }
 
     private markTaskAsDone(taskId: number): void {
-        axios({
-            "method": 'put',
-            "url": 'http://localhost:8080/tasks/' + taskId,
-            "crossdomain": true,
-            "data": {
-                "done": true
-            }
-        }).then((response: AxiosResponse) => {
-            this.loadTasks();
-        });
+        const task: (Task | undefined) = TaskStorage.DEFAULT.getTask(taskId);
+
+        if (task !== undefined) {
+            task.done = true;
+            TaskStorage.DEFAULT.saveTask(task)
+                .then(() => this.loadTasks())
+            ;
+        }
     }
 
     private markTaskAsUndone(taskId: number): void {
-        axios({
-            "method": 'put',
-            "url": 'http://localhost:8080/tasks/' + taskId,
-            "crossdomain": true,
-            "data": {
-                "done": false
-            }
-        }).then((response: AxiosResponse) => {
-            this.loadTasks();
-        });
+        const task: (Task | undefined) = TaskStorage.DEFAULT.getTask(taskId);
+
+        if (task !== undefined) {
+            task.done = false;
+            TaskStorage.DEFAULT.saveTask(task)
+                .then(() => this.loadTasks())
+            ;
+        }
     }
 
     /**
      * Performs a task deletion.
      */
     private deleteTask(taskId: number): void {
-        axios({
-            "method": 'delete',
-            "url": 'http://localhost:8080/tasks/' + taskId,
-            "crossdomain": true
-        }).then((response: AxiosResponse) => {
-            this.loadTasks();
-        });
+        TaskStorage.DEFAULT.deleteTask(taskId)
+            .then(() => this.loadTasks())
+        ;
     }
 
     /**
      * Renders the list items.
      */
     private renderListItems(rawItems: string): JSX.Element {
-        const list: ListItem[] = JSON.parse(rawItems);
+        const list: Task[] = JSON.parse(rawItems);
 
         return (
             <div>
@@ -109,9 +98,9 @@ export class List extends React.Component<ListProps, ListStates> {
                                             {item.tasktext}
                                         </div>
                                         <div style={{display: "inline", marginLeft: "1rem"}}>
-                                            <Button basic size='mini' onClick={() => this.markTaskAsDone(item.id)} primary>Done</Button>
+                                            <Button basic size='mini' onClick={() => this.markTaskAsDone(item.id as number)} primary>Done</Button>
                                         </div>
-                                        <Button basic color={"green"} size={"mini"} icon onClick={() => this.performTaskFormOpen(item.id)}>
+                                        <Button basic color={"green"} size={"mini"} icon onClick={() => this.performTaskFormOpen(item.id as number)}>
                                             <Icon name='pencil alternate' />
                                         </Button>
                                     </li>
@@ -131,17 +120,17 @@ export class List extends React.Component<ListProps, ListStates> {
                                 .map(item => {
                                     return (
                                         <li style={{height: 50}} key={item.id}>
-                                            <div style={{display: "inline"}}onClick={() => this.performTaskFormOpen(item.id)}>
+                                            <div style={{display: "inline"}} onClick={() => this.performTaskFormOpen(item.id as number)}>
                                                 {item.tasktext}
                                             </div>
                                             <div style={{display: "inline", marginLeft: "1rem"}}>
-                                                <Button basic size='mini' color={"grey"} onClick={() => this.markTaskAsUndone(item.id)}>
+                                                <Button basic size='mini' color={"grey"} onClick={() => this.markTaskAsUndone(item.id as number)}>
                                                     Undone
                                                 </Button>
-                                                <Button basic color={"green"} size={"mini"} icon onClick={() => this.performTaskFormOpen(item.id)}>
+                                                <Button basic color={"green"} size={"mini"} icon onClick={() => this.performTaskFormOpen(item.id as number)}>
                                                     <Icon name='pencil alternate' />
                                                 </Button>
-                                                <Button basic color={"red"} size={"mini"} icon onClick={() => this.deleteTask(item.id)}>
+                                                <Button basic color={"red"} size={"mini"} icon onClick={() => this.deleteTask(item.id as number)}>
                                                     <Icon name='trash alternate outline' />
                                                 </Button>
                                             </div>
