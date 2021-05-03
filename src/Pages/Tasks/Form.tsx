@@ -48,7 +48,7 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
 
         axios({
             "method": (id !== undefined ? "put": "post"),
-            "url": 'http://localhost:8080/tasks' + (id !== undefined ? ("/" + id) : ""),
+            "url": '/tasks' + (id !== undefined ? ("/" + id) : ""),
             "data": {
                 "id": id,
                 "tasktext": this.state.tasktext,
