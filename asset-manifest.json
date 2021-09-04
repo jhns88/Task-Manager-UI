@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/task-manager/static/css/main.9d5b29c0.chunk.css",
-    "main.js": "/task-manager/static/js/main.abea1641.chunk.js",
-    "main.js.map": "/task-manager/static/js/main.abea1641.chunk.js.map",
-    "runtime-main.js": "/task-manager/static/js/runtime-main.f5bb0cf9.js",
-    "runtime-main.js.map": "/task-manager/static/js/runtime-main.f5bb0cf9.js.map",
-    "static/css/2.fb1f0851.chunk.css": "/task-manager/static/css/2.fb1f0851.chunk.css",
-    "static/js/2.142e78e8.chunk.js": "/task-manager/static/js/2.142e78e8.chunk.js",
-    "static/js/2.142e78e8.chunk.js.map": "/task-manager/static/js/2.142e78e8.chunk.js.map",
-    "index.html": "/task-manager/index.html",
-    "static/css/2.fb1f0851.chunk.css.map": "/task-manager/static/css/2.fb1f0851.chunk.css.map",
-    "static/css/main.9d5b29c0.chunk.css.map": "/task-manager/static/css/main.9d5b29c0.chunk.css.map",
-    "static/js/2.142e78e8.chunk.js.LICENSE.txt": "/task-manager/static/js/2.142e78e8.chunk.js.LICENSE.txt",
-    "static/media/semantic.min.css": "/task-manager/static/media/outline-icons.ddae9b1b.woff"
+    "main.css": "/Task-Manager-UI/static/css/main.9d5b29c0.chunk.css",
+    "main.js": "/Task-Manager-UI/static/js/main.abea1641.chunk.js",
+    "main.js.map": "/Task-Manager-UI/static/js/main.abea1641.chunk.js.map",
+    "runtime-main.js": "/Task-Manager-UI/static/js/runtime-main.e6678f1d.js",
+    "runtime-main.js.map": "/Task-Manager-UI/static/js/runtime-main.e6678f1d.js.map",
+    "static/css/2.18e04219.chunk.css": "/Task-Manager-UI/static/css/2.18e04219.chunk.css",
+    "static/js/2.142e78e8.chunk.js": "/Task-Manager-UI/static/js/2.142e78e8.chunk.js",
+    "static/js/2.142e78e8.chunk.js.map": "/Task-Manager-UI/static/js/2.142e78e8.chunk.js.map",
+    "index.html": "/Task-Manager-UI/index.html",
+    "static/css/2.18e04219.chunk.css.map": "/Task-Manager-UI/static/css/2.18e04219.chunk.css.map",
+    "static/css/main.9d5b29c0.chunk.css.map": "/Task-Manager-UI/static/css/main.9d5b29c0.chunk.css.map",
+    "static/js/2.142e78e8.chunk.js.LICENSE.txt": "/Task-Manager-UI/static/js/2.142e78e8.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/Task-Manager-UI/static/media/outline-icons.ddae9b1b.woff"
   },
   "entrypoints": [
-    "static/js/runtime-main.f5bb0cf9.js",
-    "static/css/2.fb1f0851.chunk.css",
+    "static/js/runtime-main.e6678f1d.js",
+    "static/css/2.18e04219.chunk.css",
     "static/js/2.142e78e8.chunk.js",
     "static/css/main.9d5b29c0.chunk.css",
     "static/js/main.abea1641.chunk.js"
