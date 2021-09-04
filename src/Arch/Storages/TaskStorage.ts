@@ -1,11 +1,17 @@
 import {Task} from "../Task";
 import {AxiosResponse} from "axios";
+import {Router} from "../Router";
+import {CommonTaskPage} from "../../Pages/Tasks/Common";
 
 const axios  = require('axios').default;
 
 interface Tasks {
     [key: string]: Task;
 }
+
+
+// process.env.NODE_ENV Disabled during presentation purpose
+const syncWithBackend: boolean = false;
 
 /**
  * Stores and synchronizes tasks.
@@ -27,7 +33,7 @@ export class TaskStorage {
      */
     public getTasks(): Promise<Task[]> {
         return new Promise<Task[]>(resolve => {
-            if (process.env.NODE_ENV === "production") {
+            if (syncWithBackend === true) {
                 axios({
                     "method": 'get',
                     "url": process.env.REACT_APP_SERVER_URL + "/tasks"
@@ -45,7 +51,7 @@ export class TaskStorage {
      */
     private syncTasksFromServer(): Promise<Task[]> {
         return new Promise<Task[]>(resolve => {
-            if (process.env.NODE_ENV === "production") {
+            if (syncWithBackend === true) {
                 axios({
                     "method": 'get',
                     "url": process.env.REACT_APP_SERVER_URL + "/tasks"
@@ -71,20 +77,19 @@ export class TaskStorage {
 
     public saveTask(task: Task): Promise<void> {
         return new Promise(resolve => {
-            const id: number = Object.keys(this.tasks).length;
+            const idAssigned: boolean = (task.id !== undefined);
+            const id: number = (task.id ?? Object.keys(this.tasks).length);
 
             task.id = id;
             this.tasks[id] = task;
 
             // synchronize with backend on production env
-            if (process.env.NODE_ENV === "production") {
+            if (syncWithBackend === true) {
                 axios({
-                    "method": 'put',
-                    "url": process.env.REACT_APP_SERVER_URL + '/tasks/' + task.id,
+                    "method": (idAssigned === true ? 'put' : "post"),
+                    "url": process.env.REACT_APP_SERVER_URL + '/tasks' + task.id,
                     "crossdomain": true,
-                    "data": {
-                        "done": false
-                    }
+                    "data": task
                 }).then((response: AxiosResponse) => {
                     this.syncTasksFromServer()
                         .finally(() => {
@@ -105,7 +110,7 @@ export class TaskStorage {
         return new Promise(resolve => {
             delete this.tasks[id];
 
-            if (process.env.NODE_ENV === "production") {
+            if (syncWithBackend === true) {
                 axios({
                     "method": 'delete',
                     "url": process.env.REACT_APP_SERVER_URL + '/tasks/' + id,

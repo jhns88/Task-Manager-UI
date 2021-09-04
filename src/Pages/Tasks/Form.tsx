@@ -1,8 +1,9 @@
 import React from "react";
 import {Button, Header, Divider, Input} from "semantic-ui-react";
-import {AxiosResponse} from "axios";
 import {Router} from "../../Arch/Router";
 import {CommonTaskPage} from "./Common";
+import {TaskStorage} from "../../Arch/Storages/TaskStorage";
+import {Task} from "../../Arch/Task";
 
 /**
  * The task form props.
@@ -44,17 +45,11 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
      * Performs a task save action.
      */
     private saveTask(): void {
-        const id: (number | undefined) = this.state.id;
-
-        axios({
-            "method": (id !== undefined ? "put": "post"),
-            "url": '/tasks' + (id !== undefined ? ("/" + id) : ""),
-            "data": {
-                "id": id,
-                "tasktext": this.state.tasktext,
-                "done": this.state.done
-            }
-        }).then((response: AxiosResponse) => {
+        TaskStorage.DEFAULT.saveTask({
+            "id": this.state.id,
+            "tasktext": (this.state.tasktext ?? ""),
+            "done": (this.state.done ?? false)
+        }).then(() => {
             Router.getInstance().switchPage(CommonTaskPage.List);
         });
     }
@@ -63,14 +58,16 @@ export class Form extends React.PureComponent<FormProps, FormStates> {
      * @inheritDoc
      */
     public componentDidMount() {
+        const id: (number | undefined) = this.state.id;
+
         // load data
-        if (this.state.id !== undefined) {
-            axios({
-                "method": 'get',
-                "url": 'http://localhost:8080/tasks/' + this.state.id
-            }).then((response: AxiosResponse) => {
-                this.setState(response.data);
-            });
+        if (id !== undefined) {
+            TaskStorage.DEFAULT.getTasks()
+                .then(() => {
+                    const task: (Task | undefined) = TaskStorage.DEFAULT.getTask(id);
+                    task !== undefined && this.setState(task);
+                })
+            ;
         }
     }
 
