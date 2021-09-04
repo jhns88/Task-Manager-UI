@@ -2,7 +2,7 @@
  * A simple task definition.
  */
 export interface Task {
-    id: (number | undefined);
+    id?: number;
     tasktext: string;
     done: boolean;
 }
